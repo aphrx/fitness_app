@@ -1,12 +1,24 @@
+import 'package:fitness_app/data/exercise_list.dart';
 import 'package:fitness_app/screens/home.dart';
+import 'package:fitness_app/services/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark));
+  await DB.init();
+
+  for (var e in exercises) {
+    var ex = await DB.getExercise(e.id);
+    if (ex.isEmpty) {
+      DB.insertExercise(e);
+      print(e.name);
+    }
+  }
+
   runApp(const MyApp());
 }
 
